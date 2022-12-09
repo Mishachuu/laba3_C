@@ -18,7 +18,24 @@ using namespace std;
 • оператор деления матрицы на скаляр;
 • вычисление следа матрицы.
 ЗАДАЧА : Привести заданную квадратную матрицу А к нижнетреугольному виду. */
+template <typename T>
+T Check()
+{
+	T number = T(0);
+	while (number == T(0))
+	{
+		while (!(cin >> number) || (cin.peek() != '\n'))
+		{
+			cin.clear();
+			while (cin.get() != '\n');
+			cout << "Ошибка! Повторите ввод значения\n";
+		}
+		if (number == T(0)) cout << "Ошибка! Повторите ввод значения\n";
 
+	}
+
+	return number;
+}
 int GetKey()
 {
 	int key = _getch();
@@ -77,35 +94,15 @@ int menu3() {
 
 template <typename T>
 void SetData(Matrix<T>& Mass, int m, int n) {
-	T value = NULL;
+	T value = T(0);
 	cout << "Введите значения\n";
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
 			cout << "[" << i << "][" << j << "]:";
-			cin >> value;
+			value=Check<T>();
 			Mass(i, j, value);
 		}
 	}
-}
-
-
-template <typename T>
-T Check()
-{
-	T number = T(0);
-	while (number == T(0))
-	{
-		while (!(cin >> number) || (cin.peek() != '\n'))
-		{
-			cin.clear();
-			while (cin.get() != '\n');
-			cout << "Ошибка! Повторите ввод значения\n";
-		}
-		if (number == T(0)) cout << "Ошибка! Повторите ввод значения\n";
-
-	}
-
-	return abs(number);
 }
 
 
