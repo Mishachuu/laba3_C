@@ -12,13 +12,14 @@
 ЗАДАЧА : Привести заданную квадратную матрицу А к нижнетреугольному виду. */
 #include <iostream>
 #include <complex>
+#include <vector>
 
 template <typename T>
 class Matrix {
 private:
 	int n = 0;
 	int m = 0;
-	T** M = NULL;
+	vector<vector<T>> M;
 public:
 	Matrix<T>();
 	Matrix<T>(int m_, int n_);
