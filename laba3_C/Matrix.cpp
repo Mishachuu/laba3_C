@@ -21,34 +21,32 @@ template <typename T>
 Matrix<T>::Matrix() {
 	m = 0;
 	n = 0;
-	M = NULL;
 }
 
 template <typename T>
 Matrix<T>::Matrix(int m_, int n_) {
-	this->n = n_;
-	this->m = m_;
-
-	M = (T**) new T * [m];
-	for (int i = 0; i < m; i++) {
-		M[i] = (T*) new T[n];
+	this-> n = n_;
+	this ->m = m_;
+	M.resize(m_);
+	for (auto it = M.begin(); it != M.end(); it++)
+	{
+		vector<T> vectorinVect;
+		vectorinVect.resize(n_,T(0));
+		(*it) = vectorinVect;
 	}
 }
 
 template <typename T>
 Matrix<T>::Matrix(int m_, int n_, T value) {
-	this->n = n_;
-	this->m = m_;
-
-	M = (T**) new T * [m];
-	for (int i = 0; i < m; i++) {
-		M[i] = (T*) new T[n];
+	M.resize(m_);
+	for (auto it = M.begin(); it != M.end(); it++)
+	{
+		vector<T> vectorinVect;
+		vectorinVect.resize(n_, value);
+		(*it) = vectorinVect;
 	}
-
-	for (int i = 0; i < m; i++)
-		for (int j = 0; j < n; j++) {
-			this->M[i][j] = value;
-		}
+		this-> n = n_;
+	this ->m = m_;
 }
 
 
@@ -56,18 +54,8 @@ template <typename T>
 Matrix<T>::Matrix(const Matrix& M_) {
 	m = M_.m;
 	n = M_.n;
-	M = (T**) new T * [m];
-	for (int i = 0; i < m; i++) {
-		M[i] = (T*) new T[n];
-	}
-
-	for (int i = 0; i < m; i++) {
-		for (int j = 0; j < n; j++) {
-			M[i][j] = M_.M[i][j];
-		}
-	}
+	this ->M = M_.M;
 }
-
 
 template <typename T>
 int Matrix<T>::GetM() {
@@ -82,20 +70,10 @@ int Matrix<T>::GetN() {
 
 
 template <typename T>
-void Matrix<T>::Print() {
-	for (int i = 0; i < m; i++) {
-		for (int j = 0; j < n; j++) {
-			cout << M[i][j] << '\t';
-		}
-	}
-}
-
-
-template <typename T>
 T& Matrix<T>::operator ()(int i, int j)
 {
 	if ((i >= 0) || (i < m) || (j >= 0) || (j < n))
-		return M[i][j];
+		return M.at(i).at(j);
 	else throw EInvalidIndex();
 }
 
@@ -104,7 +82,7 @@ template <typename T>
 Matrix<T>& Matrix<T>::operator ()(int i, int j, T value)
 {
 	if ((i >= 0) && (i <= m) && (j >= 0) && (j <= n))
-		this->M[i][j] = value;
+		this->M.at(i).at(j)=value;
 	else throw EInvalidIndex();
 }
 
@@ -113,10 +91,12 @@ template <typename T>
 Matrix<T> Matrix<T>::operator + (const Matrix& B) {
 
 	if (n != B.n || m != B.m) throw EInvalidSize();
-	Matrix tmp(m, n);
+	
+	Matrix tmp(m,n);
+	
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
-			tmp.M[i][j] = M[i][j] + B.M[i][j];
+			tmp.M.at(i).at(j) = M.at(i).at(j) + B.M.at(i).at(j);
 		}
 	}
 	return tmp;
@@ -131,7 +111,7 @@ Matrix<T> Matrix<T>::operator - (const Matrix& B) {
 	Matrix tmp(m_, n_);
 	for (int i = 0; i < m_; i++) {
 		for (int j = 0; j < n_; j++) {
-			tmp.M[i][j] = M[i][j] - B.M[i][j];
+			tmp.M.at(i).at(j) = M.at(i).at(j) - B.M.at(i).at(j);
 		}
 	}
 	return tmp;
@@ -148,10 +128,10 @@ Matrix<T> Matrix<T>::operator * (const Matrix& B) {
 	{
 		for (int j = 0; j < m_; j++)
 		{
-			tmp.M[i][j] = 0;
+			tmp.M.at(i).at(j) = 0;
 			for (int k = 0; k < n_; k++)
 			{
-				tmp.M[i][j] += M[i][k] * B.M[k][j];
+				tmp.M.at(i).at(j) += M.at(i).at(j) * B.M.at(i).at(j);
 			}
 		}
 	}
@@ -164,7 +144,7 @@ Matrix<T> Matrix<T>::operator * (const int a) {
 	Matrix tmp(m, n);
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
-			tmp.M[i][j] = M[i][j] * T(a);
+			tmp.M.at(i).at(j) = M.at(i).at(j)*T(a);
 		}
 	}
 	return tmp;
@@ -177,7 +157,7 @@ Matrix<T> Matrix<T>::operator / (const int a) {
 	Matrix tmp(m, n);
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
-			tmp.M[i][j] = M[i][j] / T(a);
+			tmp.M.at(i).at(j) = M.at(i).at(j) / T(a);
 		}
 	}
 	return tmp;
@@ -191,7 +171,7 @@ T Matrix<T>::Trace() {
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
 			if (i == j) {
-				sum += M[i][j];
+				sum += M.at(i).at(j);
 			}
 		}
 	}
@@ -205,9 +185,9 @@ Matrix<T> Matrix<T>::Triangular() {
 	T r;
 	for (int i = 0; i < n - 1; i++) {
 		for (int j = i + 1; j < n; j++) {
-			r = M[j][i] / M[i][i];
-			for (int k = 0; k < n + 1; k++) {
-				M[j][k] = M[j][k] - r * M[i][k];
+			r = M.at(j).at(i) / M.at(i).at(i);
+			for (int k = 0; k < n ; k++) {
+				M.at(j).at(k) = M.at(j).at(k) - r * M.at(i).at(k);
 			}
 		}
 	}
@@ -221,12 +201,11 @@ void Matrix<T>::Transpose() {
 	T s;
 	for (int i = 0; i < n; i++)
 		for (int j = i + 1; j < n; j++) {
-			s = M[i][j];
-			M[i][j] = M[j][i];
-			M[j][i] = s;
+			s = M.at(i).at(j);
+			M.at(i).at(j) = M.at(j).at(i);
+			M.at(j).at(i) = s;
 		}
 }
-
 
 template class Matrix <int>;
 template class Matrix <float>;

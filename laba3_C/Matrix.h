@@ -13,6 +13,7 @@
 #include <iostream>
 #include <complex>
 #include <vector>
+using namespace std;
 
 template <typename T>
 class Matrix {
@@ -20,6 +21,8 @@ private:
 	int n = 0;
 	int m = 0;
 	vector<vector<T>> M;
+	auto begin() { return M.begin(); }
+	auto end() { return M.end(); }
 public:
 	Matrix<T>();
 	Matrix<T>(int m_, int n_);
@@ -38,11 +41,13 @@ public:
 	T Trace();
 	Matrix<T> Triangular();
 	void Transpose();
+	auto cbegin() const { return M.cbegin(); }
+	auto cend() const { return M.cend(); }
 
 	friend std::ostream& operator << (std::ostream& s, const Matrix<T>& matrix) {
-		for (int i = 0; i < matrix.m; i++) {
-			for (int j = 0; j < matrix.n; j++)
-				s << matrix.M[i][j] << " ";
+		for (auto row:matrix.M) {
+			for (auto inrow:row)
+				s << inrow << " ";
 			s << "\n";
 		}
 		return s;
