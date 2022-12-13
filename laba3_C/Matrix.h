@@ -24,7 +24,7 @@ private:
 	auto begin() { return M.begin(); }
 	auto end() { return M.end(); }
 public:
-	Matrix<T>();
+	Matrix<T>() = default;
 	Matrix<T>(int m_, int n_);
 	Matrix<T>(int m_, int n_, T value);
 	Matrix<T>(const Matrix& M_);
@@ -41,6 +41,7 @@ public:
 	T Trace();
 	Matrix<T> Triangular();
 	void Transpose();
+	~Matrix() = default;
 	auto cbegin() const { return M.cbegin(); }
 	auto cend() const { return M.cend(); }
 

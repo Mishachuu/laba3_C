@@ -17,11 +17,6 @@
 
 using namespace std;
 
-template <typename T>
-Matrix<T>::Matrix() {
-	m = 0;
-	n = 0;
-}
 
 template <typename T>
 Matrix<T>::Matrix(int m_, int n_) {
@@ -206,6 +201,7 @@ void Matrix<T>::Transpose() {
 			M.at(j).at(i) = s;
 		}
 }
+
 
 template class Matrix <int>;
 template class Matrix <float>;
